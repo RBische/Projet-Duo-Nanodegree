@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:minEms="@integer/ean_width"
-                android:id="@+id/ean"
+                android:id="@+id/etISBN"
                 android:saveEnabled="true"
                 android:maxLength="@integer/ean_size"
                 android:maxLines="1"
@@ -33,14 +33,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/scan_button"
-                android:id="@+id/scan_button"/>
+                android:id="@+id/btnScan"/>
 
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bookTitle"
+            android:id="@+id/tvBookTitle"
             android:textSize="@dimen/head_line"
             android:textIsSelectable="true"
             android:textStyle="bold"
@@ -53,9 +53,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bookSubTitle"
+            android:id="@+id/tvBookSubtitle"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/bookTitle"
+            android:layout_below="@+id/tvBookTitle"
             android:maxLines="3"
             android:ellipsize="end"
             android:layout_alignLeft="@+id/eancontainer"
@@ -64,11 +64,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/authors"
+            android:id="@+id/tvAuthors"
             android:gravity="end"
             android:textSize="@dimen/small_fontsize"
             android:layout_marginTop="20dp"
-            android:layout_below="@+id/bookSubTitle"
+            android:layout_below="@+id/tvBookSubtitle"
             android:layout_alignRight="@+id/eancontainer"
             android:layout_alignEnd="@+id/eancontainer"
             />
@@ -76,18 +76,18 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bookCover"
+            android:id="@+id/ivBookCover"
             android:contentDescription="@string/book_cover"
-            android:layout_alignTop="@+id/authors"
+            android:layout_alignTop="@+id/tvAuthors"
             android:layout_alignLeft="@+id/eancontainer"
             android:layout_alignStart="@+id/eancontainer"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/categories"
+            android:id="@+id/tvCategories"
             android:textSize="@dimen/small_fontsize"
-            android:layout_below="@+id/bookCover"
+            android:layout_below="@+id/ivBookCover"
             android:layout_marginTop="20dp"
             android:layout_alignLeft="@+id/eancontainer"
             android:layout_alignStart="@+id/eancontainer"/>
@@ -106,7 +106,7 @@
                 android:text="@string/cancel_button"
                 android:layout_weight="1"
                 style="?android:attr/buttonBarButtonStyle"
-                android:id="@+id/delete_button"
+                android:id="@+id/btnDelete"
                 android:drawableLeft="@drawable/ic_action_discard"
                 android:visibility="invisible"
                 />
@@ -117,7 +117,7 @@
                 android:text="@string/ok_button"
                 android:visibility="invisible"
                 android:layout_weight="1"
-                android:id="@+id/save_button"
+                android:id="@+id/btnSave"
                 android:drawableLeft="@drawable/ic_action_accept"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_gravity="bottom"

@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:minEms="@integer/ean_width"
-            android:id="@+id/ean"
+            android:id="@+id/etISBN"
             android:saveEnabled="true"
             android:textIsSelectable="false"
             android:maxLength="@integer/ean_size"
@@ -33,20 +33,20 @@
             android:id="@+id/scan_button"
             android:layout_marginLeft="23dp"
             android:layout_marginStart="23dp"
-            android:layout_alignBottom="@+id/ean"
-            android:layout_toRightOf="@+id/ean"
-            android:layout_toEndOf="@+id/ean"/>
+            android:layout_alignBottom="@+id/etISBN"
+            android:layout_toRightOf="@+id/etISBN"
+            android:layout_toEndOf="@+id/etISBN"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bookTitle"
+            android:id="@+id/tvBookTitle"
             android:textSize="@dimen/head_line"
             android:textIsSelectable="true"
             android:textStyle="bold"
             android:layout_below="@+id/scan_button"
-            android:layout_alignLeft="@+id/ean"
-            android:layout_alignStart="@+id/ean"
+            android:layout_alignLeft="@+id/etISBN"
+            android:layout_alignStart="@+id/etISBN"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"/>
@@ -54,42 +54,42 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bookSubTitle"
-            android:layout_below="@+id/bookTitle"
-            android:layout_alignLeft="@+id/bookTitle"
-            android:layout_alignStart="@+id/bookTitle"
+            android:id="@+id/tvBookSubtitle"
+            android:layout_below="@+id/tvBookTitle"
+            android:layout_alignLeft="@+id/tvBookTitle"
+            android:layout_alignStart="@+id/tvBookTitle"
             android:layout_marginTop="10dp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bookCover"
+            android:id="@+id/ivBookCover"
             android:contentDescription="@string/book_cover"
             android:minHeight="20dip"
             android:minWidth="20dip"
-            android:layout_below="@+id/bookSubTitle"
-            android:layout_alignLeft="@+id/bookSubTitle"
-            android:layout_alignStart="@+id/bookSubTitle"
+            android:layout_below="@+id/tvBookSubtitle"
+            android:layout_alignLeft="@+id/tvBookSubtitle"
+            android:layout_alignStart="@+id/tvBookSubtitle"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/authors"
+            android:id="@+id/tvAuthors"
             android:textSize="@dimen/small_fontsize"
             android:layout_marginLeft="25dp"
-            android:layout_alignTop="@+id/bookCover"
-            android:layout_toRightOf="@+id/bookCover"
+            android:layout_alignTop="@+id/ivBookCover"
+            android:layout_toRightOf="@+id/ivBookCover"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/categories"
+            android:id="@+id/tvCategories"
             android:textSize="@dimen/small_fontsize"
-            android:layout_below="@+id/bookCover"
-            android:layout_alignLeft="@+id/bookCover"
-            android:layout_alignStart="@+id/bookCover"
+            android:layout_below="@+id/ivBookCover"
+            android:layout_alignLeft="@+id/ivBookCover"
+            android:layout_alignStart="@+id/ivBookCover"
             android:layout_marginTop="10dp"/>
 
         <LinearLayout
@@ -107,7 +107,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_action_discard"
                 style="?android:attr/buttonBarButtonStyle"
-                android:id="@+id/delete_button"
+                android:id="@+id/btnDelete"
                 android:visibility="invisible"
                 />
 
@@ -117,7 +117,7 @@
                 android:contentDescription="@string/ok_button"
                 android:text="@string/ok_button"
                 android:layout_weight="1"
-                android:id="@+id/save_button"
+                android:id="@+id/btnSave"
                 android:visibility="invisible"
                 android:src="@drawable/ic_action_accept"
                 style="?android:attr/buttonBarButtonStyle"
