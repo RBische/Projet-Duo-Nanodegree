@@ -15,6 +15,7 @@
         android:id="@+id/scanText"
         android:padding="16dp"
         android:textColor="@android:color/white"
+        android:background="@android:color/darker_gray"
         android:text="Scanning..."
         android:gravity="center_horizontal"
         android:layout_height="wrap_content"

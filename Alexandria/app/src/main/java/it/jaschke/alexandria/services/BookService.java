@@ -35,8 +35,10 @@ public class BookService extends IntentService {
 
     public static final String FETCH_BOOK = "it.jaschke.alexandria.services.action.FETCH_BOOK";
     public static final String DELETE_BOOK = "it.jaschke.alexandria.services.action.DELETE_BOOK";
+    public static final String UPDATE_BOOK = "it.jaschke.alexandria.services.action.UPDATE_BOOK";
 
     public static final String EAN = "it.jaschke.alexandria.services.extra.EAN";
+    public static final String EXTRA_SHOWN_IN_LIST = "it.jaschke.alexandria.services.extra.ShownInList";
 
     public BookService() {
         super("Alexandria");
@@ -52,7 +54,23 @@ public class BookService extends IntentService {
             } else if (DELETE_BOOK.equals(action)) {
                 final String ean = intent.getStringExtra(EAN);
                 deleteBook(ean);
+            } else if (UPDATE_BOOK.equals(action)) {
+                final String ean = intent.getStringExtra(EAN);
+                final boolean isShownLocally = intent.getBooleanExtra(EXTRA_SHOWN_IN_LIST,false);
+                updateBook(ean,isShownLocally);
             }
+        }
+    }
+
+
+    /**
+     * Update a book to save its state
+     */
+    private void updateBook(String ean, boolean isShownLocally) {
+        if(ean!=null) {
+            ContentValues values= new ContentValues();
+            values.put(AlexandriaContract.BookEntry.SHOWN_LOCALLY, isShownLocally);
+            getContentResolver().update(AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), values, "_ID = ?", new String[]{ean});
         }
     }
 
@@ -214,6 +232,7 @@ public class BookService extends IntentService {
         values.put(AlexandriaContract.BookEntry.IMAGE_URL, imgUrl);
         values.put(AlexandriaContract.BookEntry.SUBTITLE, subtitle);
         values.put(AlexandriaContract.BookEntry.DESC, desc);
+        values.put(AlexandriaContract.BookEntry.SHOWN_LOCALLY, 0);
         getContentResolver().insert(AlexandriaContract.BookEntry.CONTENT_URI,values);
     }
 

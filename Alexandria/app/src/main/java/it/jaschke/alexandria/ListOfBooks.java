@@ -40,10 +40,11 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        final String baseSelection = AlexandriaContract.BookEntry.SHOWN_LOCALLY +" = 1";
         Cursor cursor = getActivity().getContentResolver().query(
                 AlexandriaContract.BookEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
+                baseSelection, // cols for "where" clause
                 null, // values for "where" clause
                 null  // sort order
         );
@@ -86,9 +87,9 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        final String selection = AlexandriaContract.BookEntry.TITLE +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
+        final String selection = "(" + AlexandriaContract.BookEntry.TITLE +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ?) AND " + AlexandriaContract.BookEntry.SHOWN_LOCALLY +" = 1";
         String searchString =searchText.getText().toString();
-
+        final String baseSelection = AlexandriaContract.BookEntry.SHOWN_LOCALLY +" = 1";
         if(searchString.length()>0){
             searchString = "%"+searchString+"%";
             return new CursorLoader(
@@ -105,7 +106,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 getActivity(),
                 AlexandriaContract.BookEntry.CONTENT_URI,
                 null,
-                null,
+                baseSelection,
                 null,
                 null
         );

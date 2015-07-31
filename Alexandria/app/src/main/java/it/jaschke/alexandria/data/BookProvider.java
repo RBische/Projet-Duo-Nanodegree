@@ -73,6 +73,7 @@ public class BookProvider extends ContentProvider {
         Cursor retCursor;
         switch (uriMatcher.match(uri)) {
             case BOOK:
+                String sel = selection;
                 retCursor=dbHelper.getReadableDatabase().query(
                         AlexandriaContract.BookEntry.TABLE_NAME,
                         projection,
@@ -283,7 +284,7 @@ public class BookProvider extends ContentProvider {
         final int match = uriMatcher.match(uri);
         int rowsUpdated;
         switch (match) {
-            case BOOK:
+            case BOOK_ID:
                 rowsUpdated = db.update(AlexandriaContract.BookEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;

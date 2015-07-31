@@ -41,6 +41,8 @@ public class AlexandriaContract{
 
         public static final String DESC = "description";
 
+        public static final String SHOWN_LOCALLY = "shownLocally";
+
         public static Uri buildBookUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }

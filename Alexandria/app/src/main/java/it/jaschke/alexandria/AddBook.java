@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,10 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import it.jaschke.alexandria.CameraPreview.BarcodeScannerActivity;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
@@ -44,10 +47,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @InjectView(R.id.tvAuthors) TextView mTvAuthors;
     @InjectView(R.id.tvCategories) TextView mTvCategories;
     @InjectView(R.id.ivBookCover) ImageView mIvBookCover;
-    @InjectView(R.id.btnSave) Button mBtnSave;
-    @InjectView(R.id.btnDelete) Button mBtnDelete;
-    @InjectView(R.id.btnScan) Button mBtnScan;
-
+    @InjectView(R.id.btnSave) View mBtnSave;
+    @InjectView(R.id.btnDelete) View mBtnDelete;
+    @Optional @InjectView(R.id.btnScan) View mBtnScan;
+    private Toast mCurrentToast;
+    private boolean mToDelete;
+    private String mCurrentBookISBN;
 
 
     public AddBook(){
@@ -101,17 +106,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mEtISBN.setText("");
+                if (mCurrentToast != null){
+                    mCurrentToast.cancel();
+                    mCurrentToast = null;
+                }
+                updateBook(mEtISBN.getText().toString());
+                mCurrentToast = Toast.makeText(getActivity(),getString(R.string.book_added),Toast.LENGTH_LONG);
+                mCurrentToast.show();
+                mToDelete = false;
+                mBtnSave.setEnabled(false);
+                mBtnDelete.setEnabled(true);
             }
         });
 
         rootView.findViewById(R.id.btnDelete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, mEtISBN.getText().toString());
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
+                deleteBook(mEtISBN.getText().toString());
                 mEtISBN.setText("");
             }
         });
@@ -120,15 +131,31 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             mEtISBN.setText(savedInstanceState.getString(EAN_CONTENT));
             mEtISBN.setHint("");
         }
-
-        mBtnScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), BarcodeScannerActivity.class),REQUEST_SCAN);
-            }
-        });
+        if (mBtnScan!=null){
+            mBtnScan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivityForResult(new Intent(getActivity(), BarcodeScannerActivity.class), REQUEST_SCAN);
+                }
+            });
+        }
 
         return rootView;
+    }
+
+    private void deleteBook(String currentBookISBN) {
+        Intent bookIntent = new Intent(getActivity(), BookService.class);
+        bookIntent.putExtra(BookService.EAN, currentBookISBN);
+        bookIntent.setAction(BookService.DELETE_BOOK);
+        getActivity().startService(bookIntent);
+    }
+
+    private void updateBook(String currentBookISBN) {
+        Intent bookIntent = new Intent(getActivity(), BookService.class);
+        bookIntent.putExtra(BookService.EAN, currentBookISBN);
+        bookIntent.putExtra(BookService.EXTRA_SHOWN_IN_LIST, true);
+        bookIntent.setAction(BookService.UPDATE_BOOK);
+        getActivity().startService(bookIntent);
     }
 
     private void restartLoader(){
@@ -159,7 +186,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (!data.moveToFirst()) {
             return;
         }
-
+        mToDelete = true;
+        mCurrentBookISBN = mEtISBN.getText().toString();
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         mTvBookTitle.setText(bookTitle);
 
@@ -179,7 +207,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         mTvCategories.setText(categories);
-
+        mBtnDelete.setEnabled(false);
+        mBtnScan.setEnabled(true);
         mBtnSave.setVisibility(View.VISIBLE);
         mBtnDelete.setVisibility(View.VISIBLE);
     }

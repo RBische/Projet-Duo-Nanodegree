@@ -119,19 +119,20 @@ public class BarcodeScannerActivity extends ActionBarActivity {
             int result = scanner.scanImage(barcode);
 
             if (result != 0) {
-                previewing = false;
-                mCamera.setPreviewCallback(null);
-                mCamera.stopPreview();
                 final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
                 tg.startTone(ToneGenerator.TONE_PROP_BEEP);
                 SymbolSet syms = scanner.getResults();
                 for (Symbol sym : syms) {
-
-                    Intent intent = new Intent();
                     String datas = sym.getData();
-                    intent.putExtra(SCANNER_EXTRA, datas);
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    if(datas.startsWith("978")&&datas.length()==13){
+                        previewing = false;
+                        mCamera.setPreviewCallback(null);
+                        mCamera.stopPreview();
+                        Intent intent = new Intent();
+                        intent.putExtra(SCANNER_EXTRA, datas);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
                 }
             }
         }
@@ -156,21 +157,6 @@ public class BarcodeScannerActivity extends ActionBarActivity {
             mCamera = camera;
             previewCallback = previewCb;
             autoFocusCallback = autoFocusCb;
-
-        /*
-         * Set camera to continuous focus if supported, otherwise use
-         * software auto-focus. Only works for API level >=9.
-         */
-        /*
-        Camera.Parameters parameters = camera.getParameters();
-        for (String f : parameters.getSupportedFocusModes()) {
-            if (f == Parameters.FOCUS_MODE_CONTINUOUS_PICTURE) {
-                mCamera.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                autoFocusCallback = null;
-                break;
-            }
-        }
-        */
 
             // Install a SurfaceHolder.Callback so we get notified when the
             // underlying surface is created and destroyed.
