@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
+ * SQLiteOpenHelper extends containing the schema of Alexandria App DB
  * Created by saj on 22/12/14.
  */
 public class DbHelper extends SQLiteOpenHelper {

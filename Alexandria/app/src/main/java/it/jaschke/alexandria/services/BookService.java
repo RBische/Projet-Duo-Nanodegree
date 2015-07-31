@@ -130,7 +130,7 @@ public class BookService extends IntentService {
             urlConnection.connect();
 
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 return;
             }
@@ -221,7 +221,6 @@ public class BookService extends IntentService {
             Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
             messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.no_connection));
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
-            return;
         }
     }
 

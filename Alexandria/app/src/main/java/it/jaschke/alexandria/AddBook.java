@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,7 +13,6 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,16 +29,10 @@ import it.jaschke.alexandria.services.DownloadImage;
 
 
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
     private static final int REQUEST_SCAN = 0;
+    private static final int LOADER_ID = 1;
 
-    private final int LOADER_ID = 1;
     private final String EAN_CONTENT="eanContent";
-    private static final String SCAN_FORMAT = "scanFormat";
-    private static final String SCAN_CONTENTS = "scanContents";
-
-    private String mScanFormat = "Format:";
-    private String mScanContents = "Contents:";
     @InjectView(R.id.etISBN) EditText mEtISBN;
     @InjectView(R.id.tvBookTitle) TextView mTvBookTitle;
     @InjectView(R.id.tvBookSubtitle) TextView mTvBookSubTitle;
@@ -51,8 +43,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @InjectView(R.id.btnDelete) View mBtnDelete;
     @Optional @InjectView(R.id.btnScan) View mBtnScan;
     private Toast mCurrentToast;
-    private boolean mToDelete;
-    private String mCurrentBookISBN;
 
 
     public AddBook(){
@@ -113,7 +103,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 updateBook(mEtISBN.getText().toString());
                 mCurrentToast = Toast.makeText(getActivity(),getString(R.string.book_added),Toast.LENGTH_LONG);
                 mCurrentToast.show();
-                mToDelete = false;
                 mBtnSave.setEnabled(false);
                 mBtnDelete.setEnabled(true);
             }
@@ -186,8 +175,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (!data.moveToFirst()) {
             return;
         }
-        mToDelete = true;
-        mCurrentBookISBN = mEtISBN.getText().toString();
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         mTvBookTitle.setText(bookTitle);
 

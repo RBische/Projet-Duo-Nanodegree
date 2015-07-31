@@ -1,5 +1,11 @@
 package it.jaschke.alexandria.CameraPreview;
 
+/**
+ * Activity that allows the user to scan a barcode. If an ISBN is detected, it will return it as a result in extra {@link BarcodeScannerActivity#SCANNER_EXTRA} with a {@link android.app.Activity#RESULT_OK}.
+ * This barcode scanner uses the deprecated Camera API intentionally.
+ * Created by biche on 31/07/2015.
+ */
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -26,11 +32,11 @@ import java.io.IOException;
 
 import it.jaschke.alexandria.R;
 
-
+@SuppressWarnings("deprecation")
 public class BarcodeScannerActivity extends ActionBarActivity {
     public static final String SCANNER_EXTRA = "ScannerExtra";
+    private static final String CAMERA_TAG = "Camera";
     private Camera mCamera;
-    private CameraPreview mPreview;
     private Handler autoFocusHandler;
     TextView scanText;
     ImageScanner scanner;
@@ -57,7 +63,7 @@ public class BarcodeScannerActivity extends ActionBarActivity {
         scanner.setConfig(0, Config.X_DENSITY, 3);
         scanner.setConfig(0, Config.Y_DENSITY, 3);
 
-        mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
+        CameraPreview mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
         FrameLayout preview = (FrameLayout)findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
 
@@ -88,6 +94,7 @@ public class BarcodeScannerActivity extends ActionBarActivity {
         try {
             c = Camera.open();
         } catch (Exception e){
+            Log.e(CAMERA_TAG,"Camera cannot be started");
         }
         return c;
     }
@@ -144,6 +151,7 @@ public class BarcodeScannerActivity extends ActionBarActivity {
             autoFocusHandler.postDelayed(doAutoFocus, 1000);
         }
     };
+    @SuppressWarnings("deprecation")
     public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
         private SurfaceHolder mHolder;
         private Camera mCamera;
@@ -171,9 +179,7 @@ public class BarcodeScannerActivity extends ActionBarActivity {
             // The Surface has been created, now tell the camera where to draw the preview.
             try {
                 mCamera.setPreviewDisplay(holder);
-            } catch (IOException e) {
-                Log.d("DBG", "Error setting camera preview: " + e.getMessage());
-            } catch (RuntimeException e){
+            } catch (IOException | RuntimeException e) {
                 Log.d("DBG", "Error setting camera preview: " + e.getMessage());
             }
         }

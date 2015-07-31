@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.util.Log;
 
 /**
+ * Provider that makes CRUD operations for the Alexandria DB
  * Created by saj on 24/12/14.
  */
 public class BookProvider extends ContentProvider {
@@ -73,7 +74,6 @@ public class BookProvider extends ContentProvider {
         Cursor retCursor;
         switch (uriMatcher.match(uri)) {
             case BOOK:
-                String sel = selection;
                 retCursor=dbHelper.getReadableDatabase().query(
                         AlexandriaContract.BookEntry.TABLE_NAME,
                         projection,

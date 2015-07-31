@@ -15,6 +15,7 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.DownloadImage;
 
 /**
+ * Adapter showing a book from a cursor
  * Created by saj on 11/01/15.
  */
 public class BookListAdapter extends CursorAdapter {

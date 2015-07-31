@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import java.io.InputStream;
 
 /**
+ * Asynctask that needs an ImageView and an url to display an image
  * Created by saj on 11/01/15.
  */
 public class DownloadImage extends AsyncTask<String, Void, Bitmap> {

@@ -1,5 +1,6 @@
 package it.jaschke.alexandria;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +24,13 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     private BookListAdapter bookListAdapter;
     private ListView bookList;
-    private int position = ListView.INVALID_POSITION;
+    private int position;
     private EditText searchText;
 
-    private final int LOADER_ID = 10;
+    private static final int LOADER_ID = 10;
 
     public ListOfBooks() {
+        position = ListView.INVALID_POSITION;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final String baseSelection = AlexandriaContract.BookEntry.SHOWN_LOCALLY +" = 1";
-        Cursor cursor = getActivity().getContentResolver().query(
+        @SuppressLint("Recycle") Cursor cursor = getActivity().getContentResolver().query(
                 AlexandriaContract.BookEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
                 baseSelection, // cols for "where" clause

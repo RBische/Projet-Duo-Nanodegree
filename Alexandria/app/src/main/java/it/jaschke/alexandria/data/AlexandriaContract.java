@@ -1,13 +1,13 @@
 package it.jaschke.alexandria.data;
 
 /**
+ * Contract from Alexandria app database
  * Created by saj on 22/12/14.
  */
 
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 public class AlexandriaContract{
 
