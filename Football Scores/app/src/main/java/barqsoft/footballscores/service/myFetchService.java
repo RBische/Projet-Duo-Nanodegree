@@ -28,10 +28,10 @@ import barqsoft.footballscores.R;
 /**
  * Created by yehya khaled on 3/2/2015.
  */
-public class myFetchService extends IntentService
+public class MyFetchService extends IntentService
 {
     public static final String LOG_TAG = "myFetchService";
-    public myFetchService()
+    public MyFetchService()
     {
         super("myFetchService");
     }
@@ -41,7 +41,6 @@ public class myFetchService extends IntentService
     {
         getData("n2");
         getData("p2");
-
         return;
     }
 
@@ -182,7 +181,7 @@ public class myFetchService extends IntentService
                         League.equals(SERIE_A)             ||
                         League.equals(CHAMPIONS_LEAGUE)    ||
                         League.equals(BUNDESLIGA)          ||
-                        League.equals(PRIMERA_DIVISION)     )
+                        League.equals(PRIMERA_DIVISION)    ||true )
                 {
                     match_id = match_data.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");
