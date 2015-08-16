@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity
 {
+    public static final String EXTRA_MATCH_ID_TO_SHOW = "MatchPosition";
     public static int selected_match_id;
     public static int current_fragment = 2;
     private final String save_tag = "Save Test";
@@ -18,7 +19,8 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            my_main = new PagerFragment();
+            int matchIdToShow = getIntent().getIntExtra(EXTRA_MATCH_ID_TO_SHOW,-1);
+            my_main = PagerFragment.newInstance(matchIdToShow);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, my_main)
                     .commit();

@@ -21,12 +21,19 @@ import java.util.Date;
 public class PagerFragment extends Fragment
 {
     public static final int NUM_PAGES = 5;
+    private static final String EXTRA_MATCH_ID_TO_SHOW = "PositionToShow";
     public ViewPager mPagerHandler;
     private myPageAdapter mPagerAdapter;
+    private int matchIdToShow = -1;
     private MainScreenFragment[] viewFragments = new MainScreenFragment[5];
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        if (getArguments()!=null){
+            if(getArguments().containsKey(EXTRA_MATCH_ID_TO_SHOW)){
+                matchIdToShow = getArguments().getInt(EXTRA_MATCH_ID_TO_SHOW);
+            }
+        }
         View rootView = inflater.inflate(R.layout.pager_fragment, container, false);
         mPagerHandler = (ViewPager) rootView.findViewById(R.id.pager);
         mPagerAdapter = new myPageAdapter(getChildFragmentManager());
@@ -34,13 +41,24 @@ public class PagerFragment extends Fragment
         {
             Date fragmentdate = new Date(System.currentTimeMillis()+((i-2)*86400000));
             SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
-            viewFragments[i] = new MainScreenFragment();
+            viewFragments[i] = MainScreenFragment.newInstance(matchIdToShow);
             viewFragments[i].setFragmentDate(mformat.format(fragmentdate));
         }
         mPagerHandler.setAdapter(mPagerAdapter);
         mPagerHandler.setCurrentItem(MainActivity.current_fragment);
         return rootView;
     }
+
+    public static PagerFragment newInstance(int matchIdToShowIfToday){
+        PagerFragment fragment = new PagerFragment();
+        Bundle args = new Bundle();
+        if(matchIdToShowIfToday!=-1){
+            args.putInt(EXTRA_MATCH_ID_TO_SHOW, matchIdToShowIfToday);
+        }
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     private class myPageAdapter extends FragmentStatePagerAdapter
     {
         @Override

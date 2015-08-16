@@ -22,11 +22,20 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 {
     public ScoresAdapter mAdapter;
     public static final int SCORES_LOADER = 0;
+    private static final String EXTRA_MATCH_ID_TO_SHOW = "PositionToShow";
     private String[] fragmentdate = new String[1];
-    private int last_selected_item = -1;
+    private int matchIdToShow = -1;
 
     public MainScreenFragment()
     {
+    }
+
+    public static MainScreenFragment newInstance(int positionToShow){
+        MainScreenFragment fragment = new MainScreenFragment();
+        Bundle args = new Bundle();
+        args.putInt(EXTRA_MATCH_ID_TO_SHOW,positionToShow);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     private void update_scores()
@@ -59,6 +68,14 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
                 mAdapter.notifyDataSetChanged();
             }
         });
+        if (getArguments()!=null){
+            if(getArguments().containsKey(EXTRA_MATCH_ID_TO_SHOW)){
+                matchIdToShow = getArguments().getInt(EXTRA_MATCH_ID_TO_SHOW);
+                mAdapter.detail_match_id = matchIdToShow;
+                MainActivity.selected_match_id = (int) matchIdToShow;
+                mAdapter.notifyDataSetChanged();
+            }
+        }
         return rootView;
     }
 
