@@ -32,7 +32,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private static final int REQUEST_SCAN = 0;
     private static final int LOADER_ID = 1;
 
-    private final String EAN_CONTENT="eanContent";
+    private static final String EAN_SAVED = "eanSaved";
+    private static final String EAN_CONTENT="eanContent";
+
     @InjectView(R.id.etISBN) EditText mEtISBN;
     @InjectView(R.id.tvBookTitle) TextView mTvBookTitle;
     @InjectView(R.id.tvBookSubtitle) TextView mTvBookSubTitle;
@@ -43,6 +45,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @InjectView(R.id.btnDelete) View mBtnDelete;
     @Optional @InjectView(R.id.btnScan) View mBtnScan;
     private Toast mCurrentToast;
+    private String mSaveInstanceLastValidISBN;
+    private String mSaveInstanceTypedISBN;
 
 
     public AddBook(){
@@ -51,9 +55,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(mEtISBN !=null) {
-            outState.putString(EAN_CONTENT, mEtISBN.getText().toString());
+        if(mSaveInstanceLastValidISBN !=null) {
+            outState.putString(EAN_CONTENT, mSaveInstanceLastValidISBN);
         }
+        outState.putString(EAN_SAVED, mEtISBN.getText().toString());
     }
 
     @Override
@@ -62,6 +67,17 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         View rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ButterKnife.inject(this, rootView);
 
+        if(savedInstanceState!=null){
+            if (savedInstanceState.containsKey(EAN_CONTENT)){
+                mSaveInstanceTypedISBN = savedInstanceState.getString(EAN_SAVED);
+                mEtISBN.setText(savedInstanceState.getString(EAN_CONTENT));
+                mEtISBN.setHint("");
+                mSaveInstanceLastValidISBN = savedInstanceState.getString(EAN_CONTENT);
+                restartLoader();
+            }else{
+                mEtISBN.setText(savedInstanceState.getString(EAN_SAVED));
+            }
+        }
         mEtISBN.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -81,7 +97,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     ean = "978" + ean;
                 }
                 if (ean.length() < 13) {
-                    clearFields();
                     return;
                 }
                 //Once we have an ISBN, start a book intent
@@ -89,7 +104,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 bookIntent.putExtra(BookService.EAN, ean);
                 bookIntent.setAction(BookService.FETCH_BOOK);
                 getActivity().startService(bookIntent);
-                AddBook.this.restartLoader();
+                if (mSaveInstanceTypedISBN==null||mSaveInstanceTypedISBN.equals(mSaveInstanceLastValidISBN)){
+                    AddBook.this.restartLoader();
+                }
             }
         });
 
@@ -115,11 +132,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 mEtISBN.setText("");
             }
         });
-
-        if(savedInstanceState!=null){
-            mEtISBN.setText(savedInstanceState.getString(EAN_CONTENT));
-            mEtISBN.setHint("");
-        }
         if (mBtnScan!=null){
             mBtnScan.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -175,6 +187,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (!data.moveToFirst()) {
             return;
         }
+        if (mSaveInstanceTypedISBN!=null){
+            mEtISBN.setText(mSaveInstanceTypedISBN);
+            mSaveInstanceTypedISBN = null;
+        }else{
+            mSaveInstanceLastValidISBN = mEtISBN.getText().toString();
+        }
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         mTvBookTitle.setText(bookTitle);
 
@@ -182,10 +200,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mTvBookSubTitle.setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        mTvAuthors.setLines(authorsArr.length);
-        mTvAuthors.setText(authors.replace(",", "\n"));
-        mTvAuthors.setText(authors.replace(",", "\n"));
+        if (authors!=null){
+            String[] authorsArr = authors.split(",");
+            mTvAuthors.setLines(authorsArr.length);
+            mTvAuthors.setText(authors.replace(",", "\n"));
+            mTvAuthors.setText(authors.replace(",", "\n"));
+        }else{
+            mTvAuthors.setLines(1);
+            mTvAuthors.setText("");
+        }
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
             new DownloadImage(mIvBookCover).execute(imgUrl);
@@ -203,16 +226,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
 
-    }
-
-    private void clearFields(){
-        mTvBookTitle.setText("");
-        mTvBookSubTitle.setText("");
-        mTvAuthors.setText("");
-        mTvCategories.setText("");
-        mIvBookCover.setVisibility(View.INVISIBLE);
-        mBtnSave.setVisibility(View.INVISIBLE);
-        mBtnDelete.setVisibility(View.INVISIBLE);
     }
 
     @Override
